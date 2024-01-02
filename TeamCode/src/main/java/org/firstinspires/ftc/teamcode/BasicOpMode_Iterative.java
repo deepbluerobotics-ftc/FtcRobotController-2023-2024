@@ -103,22 +103,14 @@ public class BasicOpMode_Iterative extends OpMode {
 
         //Intake logic
         if (gamepad1.b) {
-            //intakeRotating = !intakeRotating;
-            //intakeState = true;
 
-            intakePower = 1;
+            intakePower = 0.7;
         }
-        if (gamepad1.a /*&& intakeState*/) {
+        if (gamepad1.a) {
             intakePower = 0;
-
-            /*intakeState = false;
-        if (intakeRotating)
-            intakePower = 1;
-        else
-            intakePower = 0;*/
         }
         if (gamepad1.x) {
-            intakePower = -1;
+            intakePower = -0.7;
         }
 
 
