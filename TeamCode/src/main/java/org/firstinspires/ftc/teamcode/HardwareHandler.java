@@ -108,6 +108,12 @@ public class HardwareHandler {
         arm.setPower(1);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+
+    public static double InchesToEncoder(double distance)
+    {
+        double encoder = distance * (1440 / 3.7795);
+        return encoder;
+    }
 /*
     public void driveToPosition(int left, int right) {
         this.setDrivePower(0, 0);

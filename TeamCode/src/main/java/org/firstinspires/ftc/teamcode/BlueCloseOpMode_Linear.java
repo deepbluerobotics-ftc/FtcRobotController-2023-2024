@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -11,7 +11,7 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
-@TeleOp(name = "Blue: Close Linear OpMode", group = "Linear OpMode")
+@Autonomous(name = "Blue: Close Linear OpMode", group = "Linear OpMode")
 @Disabled
 public class BlueCloseOpMode_Linear extends LinearOpMode {
     HardwareHandler handler;
@@ -110,9 +110,9 @@ public class BlueCloseOpMode_Linear extends LinearOpMode {
 
                 // The following default settings are available to un-comment and edit as needed to
                 // set parameters for custom models.
-                //.setModelLabels(LABELS)
-                .setIsModelTensorFlow2(true)
-                .setIsModelQuantized(true)
+                .setModelLabels(LABELS)
+                //.setIsModelTensorFlow2(true)
+                //.setIsModelQuantized(true)
                 //.setModelInputSize(300)
                 //.setModelAspectRatio(16.0 / 9.0)
 
