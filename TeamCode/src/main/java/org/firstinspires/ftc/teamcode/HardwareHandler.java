@@ -60,8 +60,8 @@ public class HardwareHandler {
         arm.setPower(0);
         intake.setPower(0);
         claw.setPosition(0.5);
-        clawLeftGripper.setPosition(0.8);
-        clawRightGripper.setPosition(0.2);
+        clawLeftGripper.setPosition(1);
+        clawRightGripper.setPosition(0);
         launcher.setPosition(0);
     }
 

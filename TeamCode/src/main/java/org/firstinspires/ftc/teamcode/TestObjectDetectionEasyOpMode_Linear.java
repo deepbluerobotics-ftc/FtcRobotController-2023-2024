@@ -73,7 +73,6 @@ public class TestObjectDetectionEasyOpMode_Linear extends LinearOpMode {
      * Initialize the TensorFlow Object Detection processor.
      */
     private void initTfod() {
-
         // Create the TensorFlow processor the easy way.
         tfod = TfodProcessor.easyCreateWithDefaults();
 

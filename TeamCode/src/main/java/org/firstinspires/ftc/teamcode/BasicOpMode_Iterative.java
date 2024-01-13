@@ -95,7 +95,7 @@ public class BasicOpMode_Iterative extends OpMode {
         max = Math.max(max, Math.abs(backRightPower));
 
         if (max > 0.7) {
-            frontLeftPower /= max;
+            frontLeftPower   /= max;
             frontRightPower /= max;
             backLeftPower /= max;
             backRightPower /= max;
@@ -165,6 +165,7 @@ public class BasicOpMode_Iterative extends OpMode {
         if (gamepad1.y) {
             launcherPosition = 1;
         }
+
 
         //Set powers and positions
         handler.setPower(frontLeftPower, frontRightPower, backLeftPower, backRightPower, intakePower, armPower,
