@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+
 public class HardwareHandler {
     public static DcMotor frontLeftDrive = null;
     public static DcMotor backLeftDrive = null;
@@ -11,10 +13,13 @@ public class HardwareHandler {
     public static DcMotor backRightDrive = null;
     public static DcMotor intake = null;
     public static DcMotor arm = null;
+
     public static Servo claw = null;
     public static Servo clawLeftGripper = null;
     public static Servo clawRightGripper = null;
     public static Servo launcher = null;
+
+    public static WebcamName camera = null;
 
     public HardwareMap hardwareMap;
 
@@ -32,6 +37,7 @@ public class HardwareHandler {
         clawLeftGripper = hardwareMap.get(Servo.class, "claw_left_gripper");
         clawRightGripper = hardwareMap.get(Servo.class, "claw_right_gripper");
         launcher = hardwareMap.get(Servo.class, "launcher");
+        camera = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -45,11 +51,11 @@ public class HardwareHandler {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         arm.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotor.Direction.REVERSE);
+        intake.setDirection(DcMotor.Direction.FORWARD);
+        launcher.setDirection(Servo.Direction.REVERSE);
 
         resetPower();
         resetRunModes();
-        setRunModes();
     }
 
     public static void resetPower() {
@@ -59,9 +65,9 @@ public class HardwareHandler {
         frontRightDrive.setPower(0);
         arm.setPower(0);
         intake.setPower(0);
-        claw.setPosition(0.5);
-        clawLeftGripper.setPosition(1);
-        clawRightGripper.setPosition(0);
+        claw.setPosition(0.38);
+        clawLeftGripper.setPosition(0.1);
+        clawRightGripper.setPosition(0.8);
         launcher.setPosition(0);
     }
 
@@ -95,8 +101,15 @@ public class HardwareHandler {
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //arm.setPower(1);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public static void resetTargetPositions() {
+        backLeftDrive.setTargetPosition(0);
+        backRightDrive.setTargetPosition(0);
+        frontLeftDrive.setTargetPosition(0);
+        frontRightDrive.setTargetPosition(0);
+        arm.setTargetPosition(0);
     }
 
     public static void setAutoRunModes() {
@@ -105,55 +118,52 @@ public class HardwareHandler {
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setPower(1);
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        backLeftDrive.setPower(1);
+        backRightDrive.setPower(1);
+        frontLeftDrive.setPower(1);
+        frontRightDrive.setPower(1);
+        arm.setPower(1);
+        intake.setPower(0);
     }
 
-    public static double InchesToEncoder(double distance)
-    {
-        double encoder = distance * (1440 / 3.7795);
-        return encoder;
+    public static void setAutoRunModesSimple() {
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-/*
-    public void driveToPosition(int left, int right) {
-        this.setDrivePower(0, 0);
-        this.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.leftDrive.setTargetPosition(left);
-        this.rightDrive.setTargetPosition(right);
-        this.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.setDrivePower(1, 1);
-        while ((leftDrive.isBusy() || rightDrive.isBusy()));
-        this.setDrivePower(0, 0);
-        this.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        this.rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+    public static void setDrivePower(double leftFront, double leftBack, double rightFront, double rightBack) {
+        frontLeftDrive.setPower(leftFront);
+        frontRightDrive.setPower(rightFront);
+        backRightDrive.setPower(rightBack);
+        backLeftDrive.setPower(leftBack);
     }
-    */
 
+    public static void inchesForward(double distance) {
+        int counts = (int) (distance * 1440 / 3.77953);
+        frontLeftDrive.setTargetPosition(frontLeftDrive.getCurrentPosition() + counts);
+        frontRightDrive.setTargetPosition(frontRightDrive.getCurrentPosition() + counts);
+        backLeftDrive.setTargetPosition(backLeftDrive.getCurrentPosition() + counts);
+        backRightDrive.setTargetPosition(backRightDrive.getCurrentPosition() + counts);
+    }
 
+    public static void inchesRotate(double distance) {
+        int counts = (int) (distance * 1440 / 3.77953);
+        frontLeftDrive.setTargetPosition(frontLeftDrive.getCurrentPosition() + counts);
+        frontRightDrive.setTargetPosition(frontRightDrive.getCurrentPosition() + counts);
+        backLeftDrive.setTargetPosition(backLeftDrive.getCurrentPosition() - counts);
+        backRightDrive.setTargetPosition(backRightDrive.getCurrentPosition() - counts);
+    }
 
-
-    /*public void setArmPower(double power) {
-        if ((power > 0 && this.arm.getCurrentPosition() >= LINEAR_SLIDE_MAXIMUM_POSITION) || (power < 0 && this.arm.getCurrentPosition() <= 0)) {
-            this.arm.setPower(0);
-        }
-        else {
-            this.arm.setPower(power);
-        }
-    }*/
-
-    /*public void armToPosition(int position) {
-        this.arm.setPower(0);
-        this.arm.setTargetPosition(position);
-        this.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.arm.setPower(1);
-        while (arm.isBusy())
-        {
-            this.arm.setPower(0);
-            this.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-    }*/
+    public static void inchesSideways(double distance) {
+        int counts = (int) (distance * 1440 / 3.77953);
+        frontLeftDrive.setTargetPosition(frontLeftDrive.getCurrentPosition() + counts);
+        frontRightDrive.setTargetPosition(frontRightDrive.getCurrentPosition() - counts);
+        backLeftDrive.setTargetPosition(backLeftDrive.getCurrentPosition() - counts);
+        backRightDrive.setTargetPosition(backRightDrive.getCurrentPosition() + counts);
+    }
 }
